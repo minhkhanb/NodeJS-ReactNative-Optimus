@@ -3,51 +3,66 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
+//B1:import library
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableOpacity,
+  Navigator
 } from 'react-native';
 
-export default class ReactNativeOptimus extends Component {
+//B2: code Class(Component):Render
+class ReactNativeOptimus extends Component {
+
+  renderScene(route, navigator){
+    switch (route.name) {
+      case "do": return (<ManHinhDo clickBack={()=>{navigator.pop({
+        name:"vang"
+      })}} sName={route.passProps.name} sAge={route.passProps.age}/>);
+      case "vang": return (<ManHinhVang clickMe={()=>{navigator.push({
+        name:"do",
+        passProps: {
+          name: 'John',
+          age: 90
+        }
+      })}} />);
+    }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+      <Navigator initialRoute={{name:"vang"}} renderScene={this.renderScene} />
+    );
+  }
+}
+
+class ManHinhDo extends Component{
+  render() {
+    return(
+      <View style={{backgroundColor: 'red', flex:1}}>
+        <Text style={{color: 'black'}}>{this.props.sName} - {this.props.sAge}</Text>
+        <TouchableOpacity onPress={this.props.clickBack} style={{marginLeft:20,alignItems:'center',width:100,height:20,marginTop:100,backgroundColor:'yellow'}}>
+          <Text style={{alignItems:'center',color:'red'}}>Back Scene</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+class ManHinhVang extends Component{
+  render() {
+    return(
+      <View style={{backgroundColor: 'yellow', flex:1}}>
+        <TouchableOpacity onPress={this.props.clickMe} style={{marginLeft:20,alignItems:'center',width:100,height:20,marginTop:100,backgroundColor:'red'}}>
+          <Text style={{alignItems:'center',color:'white'}}>Next Scene</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
 
+//B3 Register Component chinh
 AppRegistry.registerComponent('ReactNativeOptimus', () => ReactNativeOptimus);
